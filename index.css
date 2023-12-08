@@ -1,0 +1,67 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    justify-items: center;
+    align-items: center;
+    margin: 15px;
+}
+
+.tile {
+    background-color: #e1eff7;
+    padding: 1em;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.tile:hover {
+  transform: scale(1.1);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+main h1 {
+  font-family: cursive;
+  font-size: 2em;
+  font-weight: bold;
+  color: #808d94;
+  text-shadow: 2px 2px #000000; 
+  text-align: center;
+}
+
+#hidden-button {
+  display: block;
+  background: #333;
+  border: 1px solid #444;
+  color: #444;
+}
+
+#hidden-button:hover {
+  transform: scale(1.1);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  background: #555;
+}
+
+#hidden_content {
+    display: none;
+    justify-items: center;
+    align-items: center;
+}
+
+#hidden_content h1 {
+  font-family: Hiragino Kaku Gothic ProN;
+  color: #f44336;
+}
+
+#myBtn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+#myBtn:hover {
+    background-color: #3e8e41;
+}
+
