@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f8fb">
+  <title>実験スケジュール</title>
+  <style>
+:root {
+  color-scheme:light;
+  --page:#f6f8fb;--surface:#fff;--text:#202a3b;--muted:#718096;--hair:#e4e9f0;--navy:#223550;--accent:#365ec6;
+  --row:38px;--head:56px;--time:72px;
+  --a:#6356bd;--a-bg:#f0edfd;--a-bd:#d9d1f5;
+  --b:#177f77;--b-bg:#e6f7f3;--b-bd:#bce6dc;
+  --c:#a57026;--c-bg:#fff4e0;--c-bd:#efdcba;
+  --d:#bf4e70;--d-bg:#fff0f4;--d-bd:#f0c8d4;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,"Segoe UI",sans-serif;background:var(--page);color:var(--text);-webkit-font-smoothing:antialiased}
+button,select,input,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.35;cursor:default}
+.page{max-width:1720px;padding:28px clamp(12px,2.65vw,42px) 30px;margin:0 auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:23px}
+.title-group h1{margin:4px 0 0;font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.045em;line-height:1.3}
+.eyebrow{font-size:10px;font-weight:800;color:#8a99b1;letter-spacing:.20em}
+.top-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.status{display:flex;gap:8px;align-items:center;border:1px solid var(--hair);background:#fff;color:#758399;font-size:12px;font-weight:720;padding:11px 12px;border-radius:11px;white-space:nowrap}
+.status-dot{height:7px;width:7px;display:inline-block;border-radius:50%;background:#aab6c5}
+.status.connected .status-dot{background:#2db08a}.status.pending .status-dot{background:#e5ad54}.status.error .status-dot{background:#e76a6a}
+.finish{display:flex;gap:13px;align-items:center;background:#243650;border-radius:12px;color:#fff;padding:8px 15px;min-height:42px}
+.finish small{color:#b5c3d7;font-size:11px;font-weight:750}.finish strong{font-size:22px;font-weight:850;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.btn{border:1px solid transparent;min-height:38px;border-radius:9px;padding:0 13px;display:inline-flex;justify-content:center;align-items:center;gap:6px;font-size:12px;font-weight:760;white-space:nowrap;transition:background .12s ease,transform .12s ease,box-shadow .12s ease}
+.btn:not(:disabled):active{transform:translateY(1px)}.btn.primary{background:#2c4b7d;color:#fff}.btn.primary:hover:not(:disabled){background:#203b65}.btn.secondary{background:#fff;border-color:#dce4ed;color:#57667b}.btn.secondary:hover:not(:disabled){background:#f3f6fa}.btn.danger{background:#fff;border-color:#edd7dc;color:#b44f68}
+.toolbar{background:#fff;border:1px solid var(--hair);border-radius:15px 15px 0 0;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.toolbar-left,.toolbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.toolbar-right{gap:7px}.segmented{display:inline-flex;align-items:center;background:#eef2f8;border-radius:10px;padding:4px;gap:3px}
+.segmented button{background:transparent;border:0;border-radius:7px;padding:9px 17px;font-size:12px;font-weight:800;color:#78869a;min-width:86px}
+.segmented button[aria-selected=true]{background:#fff;color:#253a59;box-shadow:0 2px 5px #1f37521c}
+.filters{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.filter{font-size:12px;font-weight:800;border:1px solid transparent;background:#f5f7fb;border-radius:8px;padding:9px 11px;color:#7d899b;min-width:35px}.filter.active{background:#e8eef7;color:#334b6b;border-color:#cbd6e7}
+.filter.person-a{color:var(--a)}.filter.person-b{color:var(--b)}.filter.person-c{color:var(--c)}.filter.person-d{color:var(--d)}
+.icon-btn{border:1px solid #dce4ed;background:#fff;color:#536b8b;border-radius:9px;height:38px;min-width:38px;font-size:23px;line-height:1}
+.icon-btn:not(:disabled):hover{background:#f2f6fb}
+.info-bar{background:#fff;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 17px;border-left:1px solid var(--hair);border-right:1px solid var(--hair);font-size:11px;color:#8895a7;font-weight:650;min-height:47px}
+.info-icon{font-size:17px;color:#7a8ca5;margin-right:9px}.info-right{display:flex;align-items:center;gap:15px}.range-label{display:flex;align-items:center;gap:7px}.range-label select{border:1px solid #dfe7f0;padding:5px;border-radius:7px;color:#596a81;background:#fff;font-size:11px}
+.board-shell{border:1px solid var(--hair);border-radius:0 0 15px 15px;background:#fff;box-shadow:0 12px 30px #23385b09;overflow:hidden}
+.scroll{overflow:auto;width:100%;max-height:min(80vh,980px);scrollbar-color:#c9d3e1 transparent}
+.board{display:flex;position:relative;min-width:760px}.board.places{min-width:1260px}
+.axis{width:var(--time);flex:0 0 var(--time);position:sticky;left:0;z-index:15;background:#fff;box-shadow:2px 0 7px #c7d1dd26}
+.axis-head{height:var(--head);position:sticky;top:0;background:#fff;z-index:7;border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);display:grid;place-items:center;font-size:10px;letter-spacing:.08em;font-weight:780;color:#9ca8ba}
+.axis-body{position:relative}.tick{position:absolute;right:12px;top:0;transform:translateY(-50%);font-size:10px;color:#9cabbc;font-variant-numeric:tabular-nums;font-weight:650;white-space:nowrap}.tick:first-child{transform:translateY(2px)}.tick.last{transform:translateY(-100%)}.tick.hour{font-size:12px;color:#667994;font-weight:770}.tick.last{color:#3f5471}
+.lane{position:relative;flex:1;min-width:0;border-left:1px solid var(--hair)}
+.places .lane{min-width:170px}.lane-head{height:var(--head);position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid #dbe4ef;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:5px 7px}
+.lane-head strong{font-size:13px;white-space:nowrap;font-weight:800;letter-spacing:-.025em}.lane-head small{font-size:10px;color:#9ca9b9;font-weight:650}
+.lane-head.person-a strong{color:var(--a)}.lane-head.person-b strong{color:var(--b)}.lane-head.person-c strong{color:var(--c)}.lane-head.person-d strong{color:var(--d)}
+.lane-body{position:relative;min-width:0;min-height:0;background-image:linear-gradient(to bottom,transparent calc(var(--row) - 1px),#e8edf3 calc(var(--row) - 1px)),linear-gradient(to bottom,transparent calc(4 * var(--row) - 1px),#cbd6e4 calc(4 * var(--row) - 1px));background-size:100% var(--row),100% calc(4 * var(--row));background-repeat:repeat-y}
+.lane-body.drag-over{background-color:#eaf1fd}
+.event{position:absolute;left:5px;right:5px;border-radius:7px;padding:0 8px;background:var(--evt-bg);border:1px solid var(--evt-bd);border-left:3px solid var(--evt);color:var(--evt);display:flex;align-items:center;gap:6px;overflow:hidden;font-size:11px;font-weight:770;white-space:nowrap;z-index:2;text-align:left;cursor:grab;transition:box-shadow .12s ease,filter .12s ease}
+.event:hover,.event:focus-visible{z-index:8;box-shadow:0 3px 12px #20324d2c;outline:0}
+.event[draggable=true]:active{cursor:grabbing}.event.dimmed{opacity:.2;filter:grayscale(.55)}.event.muted{cursor:default}
+.event.a{--evt:var(--a);--evt-bg:var(--a-bg);--evt-bd:var(--a-bd)}.event.b{--evt:var(--b);--evt-bg:var(--b-bg);--evt-bd:var(--b-bd)}.event.c{--evt:var(--c);--evt-bg:var(--c-bg);--evt-bd:var(--c-bd)}.event.d{--evt:var(--d);--evt-bg:var(--d-bg);--evt-bd:var(--d-bd)}
+.event.setup{--evt:#74869e;--evt-bg:#eaf0f7;--evt-bd:#ccdae9;background-image:repeating-linear-gradient(135deg,transparent,transparent 6px,#a6b5c51a 6px,#a6b5c51a 13px)}
+.event.break{--evt:#8b96a5;--evt-bg:#f2f4f7;--evt-bd:#dce3eb;border-style:dashed;border-left-style:solid}
+.event.custom{--evt:#5e799c;--evt-bg:#edf3fb;--evt-bd:#cfdcef}
+.evt-badge{width:21px;height:21px;flex:0 0 21px;border-radius:5px;display:grid;place-items:center;font-size:11px;background:#ffffffae;color:inherit;font-weight:900}
+.evt-label{min-width:0;overflow:hidden;text-overflow:ellipsis}.evt-small{margin-left:auto;font-size:10px;opacity:.68;font-weight:680;font-variant-numeric:tabular-nums}.event.large{flex-wrap:wrap;align-content:center;column-gap:7px;row-gap:3px}.event.large .evt-small{width:100%;margin-left:0;padding-left:27px}.event.large.no-badge .evt-small{padding-left:0}
+.event.drop-preview{opacity:.45;pointer-events:none;border-style:dashed;z-index:4}
+.now-line{height:1px;background:#5376b8;position:absolute;left:0;right:0;z-index:1;opacity:.55;pointer-events:none}
+.diagnostics{border:1px solid #efcfaa;border-bottom:0;background:#fff9ef;color:#8d6226;padding:13px 17px;font-size:12px;font-weight:650;line-height:1.65}.diagnostics.ok{background:#f1f8f5;color:#358265;border-color:#d2e9dd}.diagnostics .issue-line{display:block}.diagnostics .issue-line + .issue-line{margin-top:3px}
+.footer{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:11px;font-weight:650;color:#8795a6;padding:16px 4px}.footer button{background:transparent;border:0;padding:0 4px;font-size:11px;color:#6b7e9b;text-decoration:underline;text-underline-offset:3px}.footer button:first-of-type{margin-left:auto}
+.sheet{border:1px solid #dce4ee;border-radius:18px;box-shadow:0 24px 100px #152e5140;width:min(440px,calc(100vw - 28px));max-height:90vh;padding:23px;overflow:auto}.sheet::backdrop{background:#1c293c75;backdrop-filter:blur(3px)}
+.sheet-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}.sheet-top h2{font-size:22px;margin:6px 0 0;letter-spacing:-.04em}.close{height:31px;width:31px;background:#f0f4f8;border:0;border-radius:9px;color:#62738a;font-size:23px;line-height:1}
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:17px;font-size:11px;font-weight:800;color:#667a92}
+.field input,.field select,.field textarea{border:1px solid #dce4ee;background:#fff;outline:none;border-radius:9px;color:#27374d;font-size:14px;font-weight:600;min-height:41px;padding:9px 11px;width:100%}.field textarea{resize:vertical;min-height:70px}.field input:focus,.field select:focus,.field textarea:focus{border-color:#6f93d0;box-shadow:0 0 0 3px #6f93d01b}.field :disabled{opacity:.56;background:#f1f4f8}
+.fields-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.sheet-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid #e9edf3;margin-top:19px;padding-top:18px}.sheet-bottom-right{display:flex;gap:7px}.auth-note{font-size:12px;color:#8290a5;line-height:1.6}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,10px);background:#22344e;color:#fff;padding:11px 17px;border-radius:10px;box-shadow:0 14px 35px #172c4850;font-size:12px;font-weight:730;z-index:100;opacity:0;pointer-events:none;transition:opacity .17s ease,transform .17s ease;max-width:calc(100vw - 20px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:750px){.page{padding:16px 9px}.topbar{align-items:flex-start;flex-direction:column;gap:15px;margin-bottom:15px}.top-actions{width:100%;justify-content:space-between}.toolbar{padding:10px}.toolbar-left,.toolbar-right{width:100%;justify-content:space-between;gap:7px}.toolbar-right{justify-content:flex-start}.finish strong{font-size:18px}.info-bar{padding:9px 11px}.info-icon{display:none}.info-right{gap:6px}.footer button:first-of-type{margin-left:0}.scroll{max-height:75vh}.board{min-width:660px}.board.places{min-width:1200px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+@media print{body{background:#fff}.top-actions,.toolbar,.info-bar,.diagnostics,.footer{display:none!important}.page{padding:0}.board-shell{border:0;box-shadow:none}.scroll{overflow:visible;max-height:none}.board{min-width:0}.event{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+</style>
+  
+  
+  
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="title-group">
+        <div class="eyebrow">SCHEDULE BOARD</div>
+        <h1>実験スケジュール</h1>
+      </div>
+      <div class="top-actions">
+        <span class="status" id="syncStatus"><span class="status-dot"></span>ローカル</span>
+        <div class="finish"><small>終了</small><strong id="finishTime">15:30</strong></div>
+        <button id="loginButton" class="btn secondary" type="button">編集者ログイン</button>
+      </div>
+    </header>
+
+    <section class="toolbar" aria-label="表示と編集">
+      <div class="toolbar-left">
+        <div class="segmented" role="tablist" aria-label="ビュー">
+          <button id="tabPeople" type="button" role="tab" aria-selected="true">人別</button>
+          <button id="tabPlaces" type="button" role="tab" aria-selected="false">場所別</button>
+        </div>
+        <div class="filters" aria-label="人物">
+          <button type="button" class="filter active" data-filter="ALL">全員</button>
+          <button type="button" class="filter person-a" data-filter="A">A</button>
+          <button type="button" class="filter person-b" data-filter="B">B</button>
+          <button type="button" class="filter person-c" data-filter="C">C</button>
+          <button type="button" class="filter person-d" data-filter="D">D</button>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <button id="undoButton" type="button" class="icon-btn" aria-label="元に戻す" title="元に戻す">↶</button>
+        <button id="redoButton" type="button" class="icon-btn" aria-label="やり直し" title="やり直し">↷</button>
+        <button id="newButton" type="button" class="btn secondary" title="予定の追加">＋ 予定</button>
+        <button id="saveButton" type="button" class="btn primary">保存</button>
+        <button id="shareButton" type="button" class="btn secondary">共有</button>
+      </div>
+    </section>
+
+    <section class="diagnostics" id="diagnostics" hidden aria-live="polite"></section>
+    <section class="info-bar">
+      <div><span class="info-icon">⠿</span><span id="hintText">ドラッグで時間を変更 ／ クリックで編集</span></div>
+      <div class="info-right"><span id="taskCount"></span><label class="range-label">表示 <select id="endSelect"><option value="24">16:00</option><option value="28">17:00</option><option value="32">18:00</option></select></label></div>
+    </section>
+    <section class="board-shell" aria-label="スケジュール">
+      <div class="scroll" id="boardScroll"><div id="board"></div></div>
+    </section>
+    <footer class="footer"><span>15分単位</span><span id="footerStatus"></span><button type="button" id="exportButton">JSON</button><button type="button" id="importButton">読込</button><input type="file" id="importInput" accept="application/json,.json" hidden></footer>
+  </div>
+
+  <dialog id="eventDialog" class="sheet">
+    <form id="eventForm" method="dialog">
+      <div class="sheet-top"><div><div class="eyebrow">EVENT</div><h2 id="dialogTitle">予定を編集</h2></div><button type="button" id="closeEvent" class="close" aria-label="閉じる">×</button></div>
+      <label class="field" id="titleField"><span>予定</span><input id="eventTitle" type="text" maxlength="64" required></label>
+      <div class="fields-2">
+        <label class="field"><span>人物</span><select id="eventPerson"></select></label>
+        <label class="field"><span>場所</span><select id="eventPlace"></select></label>
+      </div>
+      <div class="fields-2">
+        <label class="field"><span>開始</span><select id="eventStart"></select></label>
+        <label class="field"><span>所要時間</span><select id="eventDuration"><option value="1">15分</option><option value="2">30分</option><option value="4">60分</option></select></label>
+      </div>
+      <label class="field"><span>メモ</span><textarea id="eventNote" rows="2" maxlength="250" placeholder=""></textarea></label>
+      <div class="sheet-bottom"><button type="button" class="btn danger" id="deleteEvent">削除</button><div class="sheet-bottom-right"><button type="button" class="btn secondary" id="cancelEvent">キャンセル</button><button type="submit" class="btn primary">反映</button></div></div>
+    </form>
+  </dialog>
+
+  <dialog id="authDialog" class="sheet auth-sheet">
+    <form id="authForm" method="dialog">
+      <div class="sheet-top"><div><div class="eyebrow">EDITOR</div><h2>編集者ログイン</h2></div><button type="button" id="closeAuth" class="close" aria-label="閉じる">×</button></div>
+      <label class="field"><span>メールアドレス</span><input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+      <p class="auth-note" id="authMessage">ログインリンクをメールで送信します．</p>
+      <div class="sheet-bottom"><div></div><button type="submit" class="btn primary" id="sendMagicLink">ログインリンクを送信</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+window.INITIAL_SCHEDULE = {
+  "startHour": 10,
+  "tasks": [
+    {
+      "id": "s_dark_C",
+      "person": "C",
+      "place": "dark",
+      "start": 0,
+      "duration": 1,
+      "kind": "session",
+      "stage": "s_dark",
+      "title": "暗室（杉山）",
+      "note": ""
+    },
+    {
+      "id": "hall_0",
+      "person": "A",
+      "place": "hall",
+      "start": 0,
+      "duration": 2,
+      "kind": "hall",
+      "stage": "hall",
+      "title": "廊下（宮下）",
+      "note": ""
+    },
+    {
+      "id": "k_704_1_B",
+      "person": "B",
+      "place": "k704",
+      "start": 0,
+      "duration": 1,
+      "kind": "session",
+      "stage": "k_704_1",
+      "title": "704（駒田）",
+      "note": ""
+    },
+    {
+      "id": "n_704_D",
+      "person": "D",
+      "place": "n704",
+      "start": 0,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_704",
+      "title": "704（西岡）",
+      "note": ""
+    },
+    {
+      "id": "k_704_1_D",
+      "person": "D",
+      "place": "k704",
+      "start": 1,
+      "duration": 1,
+      "kind": "session",
+      "stage": "k_704_1",
+      "title": "704（駒田）",
+      "note": ""
+    },
+    {
+      "id": "n_704_B",
+      "person": "B",
+      "place": "n704",
+      "start": 1,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_704",
+      "title": "704（西岡）",
+      "note": ""
+    },
+    {
+      "id": "abd_D",
+      "person": "D",
+      "place": "abd",
+      "start": 2,
+      "duration": 4,
+      "kind": "abd",
+      "stage": null,
+      "title": "アブドゥル",
+      "note": ""
+    },
+    {
+      "id": "hall_1",
+      "person": "B",
+      "place": "hall",
+      "start": 2,
+      "duration": 2,
+      "kind": "hall",
+      "stage": "hall",
+      "title": "廊下（宮下）",
+      "note": ""
+    },
+    {
+      "id": "n_704_A",
+      "person": "A",
+      "place": "n704",
+      "start": 2,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_704",
+      "title": "704（西岡）",
+      "note": ""
+    },
+    {
+      "id": "k_704_1_A",
+      "person": "A",
+      "place": "k704",
+      "start": 3,
+      "duration": 1,
+      "kind": "session",
+      "stage": "k_704_1",
+      "title": "704（駒田）",
+      "note": ""
+    },
+    {
+      "id": "n_704_C",
+      "person": "C",
+      "place": "n704",
+      "start": 3,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_704",
+      "title": "704（西岡）",
+      "note": ""
+    },
+    {
+      "id": "s_dark_A",
+      "person": "A",
+      "place": "dark",
+      "start": 4,
+      "duration": 1,
+      "kind": "session",
+      "stage": "s_dark",
+      "title": "暗室（杉山）",
+      "note": ""
+    },
+    {
+      "id": "k_704_1_C",
+      "person": "C",
+      "place": "k704",
+      "start": 4,
+      "duration": 1,
+      "kind": "session",
+      "stage": "k_704_1",
+      "title": "704（駒田）",
+      "note": ""
+    },
+    {
+      "id": "komori_B",
+      "person": "B",
+      "place": "komori704",
+      "start": 4,
+      "duration": 1,
+      "kind": "session",
+      "stage": "komori",
+      "title": "704（小森）",
+      "note": ""
+    },
+    {
+      "id": "n_704_setup",
+      "person": null,
+      "place": "n704",
+      "start": 4,
+      "duration": 2,
+      "kind": "setup",
+      "stage": "n_704_setup",
+      "title": "セットアップ",
+      "note": ""
+    },
+    {
+      "id": "s_dark_B",
+      "person": "B",
+      "place": "dark",
+      "start": 5,
+      "duration": 1,
+      "kind": "session",
+      "stage": "s_dark",
+      "title": "暗室（杉山）",
+      "note": ""
+    },
+    {
+      "id": "hall_2",
+      "person": "A",
+      "place": "hall",
+      "start": 5,
+      "duration": 2,
+      "kind": "hall",
+      "stage": "hall",
+      "title": "廊下（宮下）",
+      "note": ""
+    },
+    {
+      "id": "k_setup",
+      "person": null,
+      "place": "k704",
+      "start": 5,
+      "duration": 2,
+      "kind": "setup",
+      "stage": "k_setup",
+      "title": "セットアップ",
+      "note": ""
+    },
+    {
+      "id": "break_B",
+      "person": "B",
+      "place": null,
+      "start": 6,
+      "duration": 4,
+      "kind": "break",
+      "stage": null,
+      "title": "休憩",
+      "note": ""
+    },
+    {
+      "id": "abd_C",
+      "person": "C",
+      "place": "abd",
+      "start": 6,
+      "duration": 4,
+      "kind": "abd",
+      "stage": null,
+      "title": "アブドゥル",
+      "note": ""
+    },
+    {
+      "id": "s_dark_D",
+      "person": "D",
+      "place": "dark",
+      "start": 6,
+      "duration": 1,
+      "kind": "session",
+      "stage": "s_dark",
+      "title": "暗室（杉山）",
+      "note": ""
+    },
+    {
+      "id": "break_A",
+      "person": "A",
+      "place": null,
+      "start": 7,
+      "duration": 4,
+      "kind": "break",
+      "stage": null,
+      "title": "休憩",
+      "note": ""
+    },
+    {
+      "id": "s_dark_setup",
+      "person": null,
+      "place": "dark",
+      "start": 7,
+      "duration": 2,
+      "kind": "setup",
+      "stage": "s_dark_setup",
+      "title": "セットアップ",
+      "note": ""
+    },
+    {
+      "id": "k_704_2_D",
+      "person": "D",
+      "place": "k704",
+      "start": 8,
+      "duration": 1,
+      "kind": "session",
+      "stage": "k_704_2",
+      "title": "704（駒田）",
+      "note": ""
+    },
+    {
+      "id": "n_dark1_D",
+      "person": "D",
+      "place": "dark",
+      "start": 9,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_dark1",
+      "title": "暗室（西岡）",
+      "note": ""
+    },
+    {
+      "id": "n_dark1_C",
+      "person": "C",
+      "place": "dark",
+      "start": 10,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_dark1",
+      "title": "暗室（西岡）",
+      "note": ""
+    },
+    {
+      "id": "hall_3",
+      "person": "B",
+      "place": "hall",
+      "start": 10,
+      "duration": 2,
+      "kind": "hall",
+      "stage": "hall",
+      "title": "廊下（宮下）",
+      "note": ""
+    },
+    {
+      "id": "n_dark1_A",
+      "person": "A",
+      "place": "dark",
+      "start": 11,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_dark1",
+      "title": "暗室（西岡）",
+      "note": ""
+    },
+    {
+      "id": "k_704_2_C",
+      "person": "C",
+      "place": "k704",
+      "start": 11,
+      "duration": 1,
+      "kind": "session",
+      "stage": "k_704_2",
+      "title": "704（駒田）",
+      "note": ""
+    },
+    {
+      "id": "s_704_D",
+      "person": "D",
+      "place": "s704",
+      "start": 11,
+      "duration": 1,
+      "kind": "session",
+      "stage": "s_704",
+      "title": "704（杉山）",
+      "note": ""
+    },
+    {
+      "id": "break_C",
+      "person": "C",
+      "place": null,
+      "start": 12,
+      "duration": 4,
+      "kind": "break",
+      "stage": null,
+      "title": "休憩",
+      "note": ""
+    },
+    {
+      "id": "break_D",
+      "person": "D",
+      "place": null,
+      "start": 12,
+      "duration": 4,
+      "kind": "break",
+      "stage": null,
+      "title": "休憩",
+      "note": ""
+    },
+    {
+      "id": "n_dark1_B",
+      "person": "B",
+      "place": "dark",
+      "start": 12,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_dark1",
+      "title": "暗室（西岡）",
+      "note": ""
+    },
+    {
+      "id": "hall_4",
+      "person": "A",
+      "place": "hall",
+      "start": 12,
+      "duration": 2,
+      "kind": "hall",
+      "stage": "hall",
+      "title": "廊下（宮下）",
+      "note": ""
+    },
+    {
+      "id": "n_setup",
+      "person": null,
+      "place": "dark",
+      "start": 13,
+      "duration": 2,
+      "kind": "setup",
+      "stage": "n_setup",
+      "title": "セットアップ",
+      "note": ""
+    },
+    {
+      "id": "k_704_2_B",
+      "person": "B",
+      "place": "k704",
+      "start": 13,
+      "duration": 1,
+      "kind": "session",
+      "stage": "k_704_2",
+      "title": "704（駒田）",
+      "note": ""
+    },
+    {
+      "id": "abd_A",
+      "person": "A",
+      "place": "abd",
+      "start": 14,
+      "duration": 4,
+      "kind": "abd",
+      "stage": null,
+      "title": "アブドゥル",
+      "note": ""
+    },
+    {
+      "id": "s_704_B",
+      "person": "B",
+      "place": "s704",
+      "start": 14,
+      "duration": 1,
+      "kind": "session",
+      "stage": "s_704",
+      "title": "704（杉山）",
+      "note": ""
+    },
+    {
+      "id": "hall_5",
+      "person": "B",
+      "place": "hall",
+      "start": 15,
+      "duration": 2,
+      "kind": "hall",
+      "stage": "hall",
+      "title": "廊下（宮下）",
+      "note": ""
+    },
+    {
+      "id": "n_dark2_D",
+      "person": "D",
+      "place": "dark",
+      "start": 16,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_dark2",
+      "title": "暗室（西岡）",
+      "note": ""
+    },
+    {
+      "id": "n_dark2_B",
+      "person": "B",
+      "place": "dark",
+      "start": 17,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_dark2",
+      "title": "暗室（西岡）",
+      "note": ""
+    },
+    {
+      "id": "s_704_C",
+      "person": "C",
+      "place": "s704",
+      "start": 17,
+      "duration": 1,
+      "kind": "session",
+      "stage": "s_704",
+      "title": "704（杉山）",
+      "note": ""
+    },
+    {
+      "id": "abd_B",
+      "person": "B",
+      "place": "abd",
+      "start": 18,
+      "duration": 4,
+      "kind": "abd",
+      "stage": null,
+      "title": "アブドゥル",
+      "note": ""
+    },
+    {
+      "id": "n_dark2_A",
+      "person": "A",
+      "place": "dark",
+      "start": 18,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_dark2",
+      "title": "暗室（西岡）",
+      "note": ""
+    },
+    {
+      "id": "n_dark2_C",
+      "person": "C",
+      "place": "dark",
+      "start": 19,
+      "duration": 1,
+      "kind": "session",
+      "stage": "n_dark2",
+      "title": "暗室（西岡）",
+      "note": ""
+    },
+    {
+      "id": "komori_A",
+      "person": "A",
+      "place": "komori704",
+      "start": 19,
+      "duration": 1,
+      "kind": "session",
+      "stage": "komori",
+      "title": "704（小森）",
+      "note": ""
+    },
+    {
+      "id": "komori_D",
+      "person": "D",
+      "place": "komori704",
+      "start": 20,
+      "duration": 1,
+      "kind": "session",
+      "stage": "komori",
+      "title": "704（小森）",
+      "note": ""
+    },
+    {
+      "id": "s_704_A",
+      "person": "A",
+      "place": "s704",
+      "start": 20,
+      "duration": 1,
+      "kind": "session",
+      "stage": "s_704",
+      "title": "704（杉山）",
+      "note": ""
+    },
+    {
+      "id": "k_704_2_A",
+      "person": "A",
+      "place": "k704",
+      "start": 21,
+      "duration": 1,
+      "kind": "session",
+      "stage": "k_704_2",
+      "title": "704（駒田）",
+      "note": ""
+    },
+    {
+      "id": "komori_C",
+      "person": "C",
+      "place": "komori704",
+      "start": 21,
+      "duration": 1,
+      "kind": "session",
+      "stage": "komori",
+      "title": "704（小森）",
+      "note": ""
+    }
+  ]
+};
+
+</script>
+<script>
+window.SCHEDULE_CONFIG = {
+  supabaseUrl: "",
+  publishableKey: ""
+};
+
+</script>
+<script>
+(() => {
+  'use strict';
+  const HOUR0 = 10;
+  const ROW = 38;
+  const MAX_SLOTS = 32;
+  const LOCAL_KEY = 'experiment-board:local:v2';
+  const INITIAL = window.INITIAL_SCHEDULE?.tasks || [];
+  const CONFIG = window.SCHEDULE_CONFIG || {};
+  const CLOUD = Boolean(CONFIG.supabaseUrl && (CONFIG.publishableKey || CONFIG.anonKey));
+  const PERSONS = ['A', 'B', 'C', 'D'];
+  const PLACES = [
+    {id:'dark', name:'暗室', sub:'杉山 ／ 西岡'},
+    {id:'n704', name:'704（西岡）'},
+    {id:'k704', name:'704（駒田）'},
+    {id:'s704', name:'704（杉山）'},
+    {id:'komori704', name:'704（小森）'},
+    {id:'hall', name:'廊下（宮下）'},
+    {id:'abd', name:'アブドゥル'}
+  ];
+  const DEFAULT_TITLE = '追加予定';
+  const $ = id => document.getElementById(id);
+  const clone = x => JSON.parse(JSON.stringify(x));
+  const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const time = n => { const m = HOUR0 * 60 + Number(n) * 15; return String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0'); };
+  const normalize = raw => raw.map(t => ({...t, start:Number(t.start), duration:Number(t.duration), note: String(t.note||'')}));
+  const initialItems = normalize(INITIAL);
+  let localCache = null;
+  try { const stored = JSON.parse(localStorage.getItem(LOCAL_KEY) || 'null'); if (Array.isArray(stored)) localCache=normalize(stored); } catch (_e) { /* ignore corrupt local draft */ }
+  const state = {
+    view:'people', filter:'ALL', endSlots:24, items: CLOUD ? clone(initialItems) : (localCache || clone(initialItems)),
+    history:[], future:[], client:null, editor:!CLOUD, user:null, revision:0,
+    cloudReady:false, dirty:false, saving:false, remoteConflict:false, drag:null,
+    selectedId:null, newItem:false, saveTimer:null, counter:0
+  };
+  const PLACE_NAMES = Object.fromEntries(PLACES.map(p => [p.id,p.name]));
+  let toastTimer;
+
+  function toast(msg) {
+    const el=$('toast'); el.textContent=msg; el.classList.add('show');
+    clearTimeout(toastTimer); toastTimer=setTimeout(() => el.classList.remove('show'), 2600);
+  }
+  function persistLocal(){if(!CLOUD)try{localStorage.setItem(LOCAL_KEY,JSON.stringify(state.items));}catch(_e){toast('保存できませんでした');}}
+  function byStage(stage){return state.items.filter(x => x.stage === stage);}
+  function taskInterval(t){return `${time(t.start)}–${time(t.start+t.duration)}`;}
+  function finishSlot(){return Math.max(...state.items.map(x => x.start + x.duration),0);}
+  function issueList(){
+    const issues=[];
+    const add=s => {if(!issues.includes(s)) issues.push(s);};
+    const events=state.items;
+    const mustExist = new Set(initialItems.map(x => x.id));
+    for(const id of mustExist){if(events.filter(t=>t.id===id).length!==1)add('必須の予定が欠けています');}
+    if(new Set(events.map(t=>t.id)).size!==events.length)add('予定IDが重複しています');
+    for(const t of events){
+      const need={session:1,hall:2,abd:4,break:4,setup:2}[t.kind];
+      if(need!=null && t.duration !== need) add(`${t.title}：所要時間が異なります`);
+      if(!Number.isInteger(t.start)||t.start<0||t.start+t.duration>MAX_SLOTS)add(`${t.title}：時間が範囲外です`);
+      if(t.kind==='break' && (t.start<6||t.start>12))add(`${t.person}：休憩の開始時刻を確認してください`);
+      if(t.kind!=='setup' && !PERSONS.includes(t.person))add(`${t.title}：人物を指定してください`);
+      if(t.kind!=='break'&&!PLACE_NAMES[t.place])add(`${t.title}：場所を指定してください`);
+      if(t.kind!=='custom' && t.kind!=='break') {
+        const orig=initialItems.find(x=>x.id===t.id);
+        if(orig && (orig.place!==t.place||orig.stage!==t.stage||orig.kind!==t.kind))add(`${t.title}：実験の場所・種類が変更されています`);
+      }
+    }
+    for(const person of PERSONS){
+      const subset=events.filter(t=>t.person===person).sort((a,b)=>a.start-b.start);
+      for(let i=1;i<subset.length;i++)if(subset[i-1].start+subset[i-1].duration>subset[i].start)add(`${person}：${time(subset[i].start)}に予定が重複しています`);
+      if(events.filter(t=>t.kind==='break'&&t.person===person).length!==1)add(`${person}：休憩は60分×1枠です`);
+      if(events.filter(t=>t.kind==='abd'&&t.person===person).length!==1)add(`${person}：アブドゥルは60分×1枠です`);
+      if(events.filter(t=>t.id===`komori_${person}`).length!==1)add(`${person}：704（小森）の予定を確認してください`);
+    }
+    for(const place of PLACES.map(p=>p.id)){
+      const subset=events.filter(t=>t.place===place).sort((a,b)=>a.start-b.start);
+      for(let i=1;i<subset.length;i++)if(subset[i-1].start+subset[i-1].duration>subset[i].start)add(`${PLACE_NAMES[place]}：${time(subset[i].start)}に予定が重複しています`);
+    }
+    for(const stage of ['s_dark','s_704','n_704','n_dark1','n_dark2','k_704_1','k_704_2','komori']) {
+      const people=byStage(stage).map(x=>x.person);
+      if(people.length!==4||PERSONS.some(p=>people.filter(q=>q===p).length!==1))add(`${stageName(stage)}：A～D各1回が必要です`);
+    }
+    for(const setup of ['s_dark_setup','n_704_setup','n_setup','k_setup'])if(byStage(setup).length!==1)add('セットアップが不足しています');
+    const order=[['s_dark','s_dark_setup'],['s_dark_setup','s_704'],['s_dark_setup','n_dark1'],['n_704','n_704_setup'],['n_704_setup','n_dark1'],['n_dark1','n_setup'],['n_setup','n_dark2'],['k_704_1','k_setup'],['k_setup','k_704_2']];
+    for(const [a,b] of order){
+      const left=byStage(a),right=byStage(b);
+      if(!left.length||!right.length)continue;
+      const last=Math.max(...left.map(x=>x.start+x.duration));
+      const first=Math.min(...right.map(x=>x.start));
+      if(last>first)add(`${stageName(a)} → ${stageName(b)}：順序を確認してください`);
+    }
+    const hall=events.filter(t=>t.kind==='hall').sort((a,b)=>a.start-b.start);
+    const hallPeople=[...new Set(hall.map(t=>t.person))];
+    if(hall.length!==6||hallPeople.length!==2||hallPeople.some(p=>hall.filter(t=>t.person===p).length!==3))add('廊下（宮下）：2人×3回が必要です');
+    for(let i=1;i<hall.length;i++)if(hall[i].person===hall[i-1].person)add('廊下（宮下）：同じ人物が連続しています');
+    return issues;
+  }
+  function stageName(id){
+    const labels={s_dark:'暗室（杉山）',s_dark_setup:'暗室のセットアップ',s_704:'704（杉山）',n_704:'704（西岡）',n_704_setup:'704（西岡）のセットアップ',n_dark1:'暗室（西岡）前半',n_setup:'暗室（西岡）のセットアップ',n_dark2:'暗室（西岡）後半',k_704_1:'704（駒田）前半',k_setup:'704（駒田）のセットアップ',k_704_2:'704（駒田）後半',komori:'704（小森）'};
+    return labels[id]||id;
+  }
+  function setStatus(type,label){
+    const x=$('syncStatus'); x.className='status '+type; x.innerHTML=`<span class="status-dot"></span>${esc(label)}`;
+  }
+  function renderTop(){
+    $('finishTime').textContent=time(finishSlot());
+    const issues=issueList();
+    const diag=$('diagnostics'); diag.hidden=issues.length===0&&!state.remoteConflict;
+    diag.className='diagnostics';
+    if(!diag.hidden){
+      const arr=issues.slice(0,6).map(msg=>`<span class="issue-line">・ ${esc(msg)}</span>`);
+      if(issues.length>6)arr.push(`<span class="issue-line">ほか ${issues.length-6}件</span>`);
+      if(state.remoteConflict)arr.unshift('<span class="issue-line">他の編集が反映されました．再読込が必要です． <button type="button" id="reloadRemote">読み直す</button></span>');
+      diag.innerHTML=`<strong>${issues.length}件の確認事項</strong>${arr.join('')}`;
+      diag.querySelector('#reloadRemote')?.addEventListener('click',reloadRemote);
+    }
+    if(!CLOUD)setStatus('','ローカル');
+    else if(state.remoteConflict)setStatus('error','競合');
+    else if(!state.cloudReady)setStatus('pending','接続中');
+    else if(state.dirty)setStatus('pending','未保存');
+    else setStatus('connected',state.editor?'同期中':'共有・閲覧');
+    $('loginButton').hidden=!CLOUD;
+    $('loginButton').textContent=state.user?'ログアウト':'編集者ログイン';
+    const enabled=state.editor;
+    $('undoButton').disabled=!enabled||!state.history.length;
+    $('redoButton').disabled=!enabled||!state.future.length;
+    $('newButton').disabled=!enabled;
+    $('saveButton').disabled=!enabled||issues.length>0||state.remoteConflict||state.saving||(!state.dirty&&CLOUD);
+    $('saveButton').textContent=state.saving?'保存中…':(issues.length?'要修正':'保存');
+    $('hintText').textContent=enabled?'ドラッグで時間を変更 ／ クリックで編集':'閲覧のみ';
+    $('taskCount').textContent=`${state.items.length}件`;
+    $('footerStatus').textContent=CLOUD?(state.editor?'編集可':'閲覧のみ'):'この端末だけに保存';
+    $('importButton').disabled=!enabled;
+    document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===state.filter));
+    $('tabPeople').setAttribute('aria-selected',String(state.view==='people'));
+    $('tabPlaces').setAttribute('aria-selected',String(state.view==='places'));
+  }
+  function cardText(t){
+    if(t.kind==='setup')return 'セットアップ';
+    if(t.kind==='break')return '休憩';
+    if(t.kind==='abd')return 'アブドゥル';
+    return t.title||PLACE_NAMES[t.place]||DEFAULT_TITLE;
+  }
+  function cardHtml(t,laneMode){
+    const person=t.person||'';
+    const kind=t.kind==='setup'?'setup':t.kind==='break'?'break':t.kind==='custom'?'custom':person.toLowerCase();
+    const large=t.duration>=2?' large':'';
+    const dimmed=state.filter!=='ALL'&&t.person&&t.person!==state.filter?' dimmed':'';
+    const badge=laneMode==='places'&&person?`<span class="evt-badge">${esc(person)}</span>`:'';
+    const headline=laneMode==='people'?cardText(t): (t.kind==='setup'?'セットアップ':t.kind==='custom'?cardText(t):t.kind==='abd'||t.kind==='hall'?person:t.place==='dark'?`${t.title.replace('暗室（','').replace('）','')} · ${person}`:person);
+    const detail=t.duration>=2?`<span class="evt-small">${esc(taskInterval(t))}</span>`:'';
+    const noBadge=badge?'':' no-badge';
+    const draggable=state.editor?'true':'false';
+    const top=t.start*ROW+2;
+    const height=Math.max(ROW*t.duration-4,ROW-4);
+    return `<button class="event ${esc(kind)}${large}${dimmed}${noBadge}${state.editor?'':' muted'}" type="button" draggable="${draggable}" data-id="${esc(t.id)}" style="top:${top}px;height:${height}px" title="${esc(t.title)} ${esc(taskInterval(t))}">${badge}<span class="evt-label">${esc(headline)}</span>${detail}</button>`;
+  }
+  function renderBoard(){
+    const end=Math.max(state.endSlots,Math.min(MAX_SLOTS,Math.ceil(finishSlot()/4)*4));
+    const height=end*ROW;
+    const lanes=state.view==='people'?PERSONS.map(p=>({id:p,name:p,sub:''})):PLACES;
+    const ticks=[];for(let s=0;s<=end;s+=2){const cls=s%4===0?'hour':'';ticks.push(`<div class="tick ${cls} ${s===end?'last':''}" style="top:${s*ROW}px">${time(s)}</div>`);}
+    const axis=`<div class="axis"><div class="axis-head">TIME</div><div class="axis-body" style="height:${height}px">${ticks.join('')}</div></div>`;
+    const laneNodes=lanes.map(l=>{
+      const subset=state.items.filter(t=>state.view==='people'?t.person===l.id:t.place===l.id);
+      subset.sort((a,b)=>a.start-b.start||a.duration-b.duration);
+      const headClass=state.view==='people'?`person-${l.id.toLowerCase()}`:'';
+      return `<div class="lane"><div class="lane-head ${headClass}"><strong>${esc(l.name)}</strong>${l.sub?`<small>${esc(l.sub)}</small>`:''}</div><div class="lane-body" data-lane="${esc(l.id)}" style="height:${height}px">${subset.map(t=>cardHtml(t,state.view)).join('')}</div></div>`;
+    });
+    const board=$('board');board.className='board '+(state.view==='places'?'places':'people');board.innerHTML=axis+laneNodes.join('');
+  }
+  function render(){renderTop();renderBoard();}
+  function change(mutator){
+    if(!state.editor)return;
+    const before=JSON.stringify(state.items);
+    const next=clone(state.items); mutator(next);
+    if(before===JSON.stringify(next))return;
+    state.history.push(clone(state.items)); if(state.history.length>50)state.history.shift();
+    state.future=[]; state.items=next; state.dirty=true;state.remoteConflict=false;
+    persistLocal();render();queueSave();
+  }
+  function queueSave(){
+    if(!CLOUD)return;
+    clearTimeout(state.saveTimer);
+    if(!state.editor||issueList().length||state.remoteConflict)return;
+    state.saveTimer=setTimeout(()=>saveCloud(),950);
+  }
+  async function saveCloud(){
+    if(!CLOUD){persistLocal();toast('ブラウザに保存しました');return;}
+    if(!state.client||!state.editor||!state.dirty||state.saving||state.remoteConflict)return;
+    const issues=issueList();if(issues.length){toast('予定を確認してください');renderTop();return;}
+    state.saving=true; const snapshot=clone(state.items); const checksum=JSON.stringify(snapshot);const rev=state.revision;
+    renderTop();
+    try{
+      const {data,error}=await state.client.from('schedules')
+        .update({data:snapshot,revision:rev+1,updated_at:new Date().toISOString()})
+        .eq('key','main').eq('revision',rev).select('revision').maybeSingle();
+      if(error)throw error;
+      if(!data){state.remoteConflict=true;toast('他の編集と競合しました');}
+      else{state.revision=data.revision;state.dirty=checksum!==JSON.stringify(state.items);if(!state.dirty)toast('保存しました');}
+    }catch(e){console.error(e);toast('保存できませんでした');}
+    finally{state.saving=false;renderTop();if(state.dirty&&!state.remoteConflict&&issueList().length===0)queueSave();}
+  }
+  function undo(){if(!state.history.length||!state.editor)return;state.future.push(clone(state.items));state.items=state.history.pop();state.dirty=true;persistLocal();render();queueSave();}
+  function redo(){if(!state.future.length||!state.editor)return;state.history.push(clone(state.items));state.items=state.future.pop();state.dirty=true;persistLocal();render();queueSave();}
+  function startOptionList(current){
+    $('eventStart').innerHTML=Array.from({length:MAX_SLOTS},(_,s)=>`<option value="${s}"${s===current?' selected':''}>${time(s)}</option>`).join('');
+  }
+  function fillForm(t,isNew=false){
+    state.selectedId=t.id;state.newItem=isNew;
+    $('dialogTitle').textContent=isNew?'予定を追加':'予定を編集';
+    const fixed=!isNew&&t.kind!=='custom';
+    $('eventTitle').value=t.title||DEFAULT_TITLE;$('eventTitle').disabled=fixed;
+    $('eventPerson').innerHTML=`<option value="">—</option>${PERSONS.map(p=>`<option value="${p}">${p}</option>`).join('')}`;
+    $('eventPerson').value=t.person||'';$('eventPerson').disabled=t.kind==='setup';
+    $('eventPlace').innerHTML=`<option value="">—</option>${PLACES.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}`;
+    $('eventPlace').value=t.place||'';$('eventPlace').disabled=fixed;
+    startOptionList(t.start);
+    $('eventDuration').value=String(t.duration);$('eventDuration').disabled=fixed;
+    $('eventNote').value=t.note||'';
+    $('deleteEvent').hidden=fixed;
+    $('eventDialog').showModal();
+  }
+  function openEvent(id){if(!state.editor)return;const t=state.items.find(x=>x.id===id);if(t)fillForm(t);}
+  function makeNew(){
+    if(!state.editor)return;
+    const id='custom_'+Date.now()+'_'+(++state.counter);
+    fillForm({id,kind:'custom',person:state.filter==='ALL'?'A':state.filter,place:'komori704',start:0,duration:1,title:DEFAULT_TITLE,stage:null,note:''},true);
+  }
+  function applyForm(){
+    const t={id:state.selectedId};
+    t.title=$('eventTitle').value.trim()||DEFAULT_TITLE;
+    t.person=$('eventPerson').value||null;
+    t.place=$('eventPlace').value||null;
+    t.start=Number($('eventStart').value);
+    t.duration=Number($('eventDuration').value);
+    t.note=$('eventNote').value.trim();
+    if(state.newItem){t.kind='custom';t.stage=null;change(arr=>arr.push(t));}
+    else change(arr=>{const x=arr.find(o=>o.id===t.id);if(x){Object.assign(x,{start:t.start,person:t.person,note:t.note});if(x.kind==='custom')Object.assign(x,{place:t.place,title:t.title,duration:t.duration});}});
+    $('eventDialog').close();
+  }
+  function deleteSelected(){
+    if(!state.editor||!state.selectedId)return;
+    const t=state.items.find(x=>x.id===state.selectedId);
+    if(!t||t.kind!=='custom')return;
+    change(arr=>{const at=arr.findIndex(x=>x.id===t.id);if(at>=0)arr.splice(at,1);});
+    $('eventDialog').close();
+  }
+  function beginDrag(e){
+    const el=e.target.closest('.event');if(!el||!state.editor)return;
+    const t=state.items.find(o=>o.id===el.dataset.id);if(!t)return;
+    const r=el.getBoundingClientRect();
+    state.drag={id:t.id,offset:Math.max(0,e.clientY-r.top)};
+    e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',t.id);
+  }
+  function dropEvent(e){
+    const lane=e.target.closest('.lane-body');if(!lane||!state.editor)return;
+    e.preventDefault();document.querySelectorAll('.lane-body').forEach(x=>x.classList.remove('drag-over'));
+    const id=state.drag?.id||e.dataTransfer.getData('text/plain');
+    const t=state.items.find(o=>o.id===id);if(!t)return;
+    const laneId=lane.dataset.lane;
+    if(state.view==='places'&&laneId!==t.place){toast('場所の変更は予定編集から行ってください');return;}
+    if(state.view==='people'&&!t.person)return;
+    const r=lane.getBoundingClientRect();
+    const offset=state.drag?.offset||0;
+    const start=Math.max(0,Math.min(MAX_SLOTS-t.duration,Math.round((e.clientY-r.top-offset)/ROW)));
+    change(arr=>{const x=arr.find(o=>o.id===id);if(x){x.start=start;if(state.view==='people')x.person=laneId;}});
+    state.drag=null;
+  }
+  function exportJSON(){
+    const content=JSON.stringify({version:1,events:state.items,revision:state.revision},null,2);
+    const blob=new Blob([content],{type:'application/json'});const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='schedule.json';a.click();URL.revokeObjectURL(url);
+  }
+  async function importJSON(file){
+    if(!state.editor||!file)return;
+    try{
+      const raw=JSON.parse(await file.text());
+      const items=normalize(Array.isArray(raw)?raw:raw.events);
+      if(!Array.isArray(items)||!items.length)throw Error('missing events');
+      if(items.some(t=>!t.id||!t.kind||!Number.isInteger(t.start)||!Number.isInteger(t.duration)))throw Error('invalid task');
+      change(arr=>{arr.splice(0,arr.length,...items);});
+      toast('読み込みました');
+    }catch(e){console.error(e);toast('JSONを読み込めませんでした');}
+    $('importInput').value='';
+  }
+  async function share(){
+    if(!CLOUD){toast('共有にはSupabaseの設定が必要です');return;}
+    const href=location.href.split('#')[0];
+    try{await navigator.clipboard.writeText(href);toast('URLをコピーしました');}
+    catch(e){window.prompt('共有URL',href);}
+  }
+  async function reloadRemote(){
+    if(!state.client)return false;
+    if(state.dirty && !confirm('未保存の編集を破棄して読み直しますか？'))return false;
+    try{
+      const {data,error}=await state.client.from('schedules').select('data,revision').eq('key','main').single();
+      if(error)throw error;
+      state.items=normalize(data.data);state.revision=data.revision;state.dirty=false;state.remoteConflict=false;state.history=[];state.future=[];render();return true;
+    }catch(e){console.error(e);toast('データを取得できませんでした');return false;}
+  }
+  async function getEditorStatus(){
+    if(!state.client)return;
+    const {data:{session}}=await state.client.auth.getSession();
+    state.user=session?.user||null;
+    state.editor=false;
+    if(session){
+      const {data,error}=await state.client.rpc('is_schedule_editor');
+      if(error)console.error('editor check',error);
+      state.editor=data===true;
+    }
+    renderTop();
+  }
+  async function setupCloud(){
+    if(!CLOUD){render();return;}
+    setStatus('pending','接続中');
+    try{
+      const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.58.0');
+      state.client=createClient(CONFIG.supabaseUrl,CONFIG.publishableKey||CONFIG.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:'pkce'}});
+      if(!await reloadRemote())throw Error('Could not load initial schedule');
+      state.cloudReady=true;
+      await getEditorStatus();
+      state.client.auth.onAuthStateChange(() => {setTimeout(()=>getEditorStatus(),100);});
+      state.client.channel('schedule-board-main').on('postgres_changes',{event:'UPDATE',schema:'public',table:'schedules',filter:'key=eq.main'},p=>{
+        const row=p.new;if(!row||row.revision<=state.revision||state.saving)return;
+        if(state.dirty){state.remoteConflict=true;renderTop();return;}
+        state.items=normalize(row.data);state.revision=row.revision;state.history=[];state.future=[];render();
+      }).subscribe();
+      render();
+    }catch(e){console.error(e);state.cloudReady=false;setStatus('error','接続エラー');toast('Supabaseに接続できませんでした');}
+  }
+  async function onLoginClick(){
+    if(!state.client)return;
+    if(state.user){await state.client.auth.signOut();state.user=null;state.editor=false;render();toast('ログアウトしました');return;}
+    $('authMessage').textContent='ログインリンクをメールで送信します．';$('authDialog').showModal();
+  }
+  async function sendMagicLink(e){
+    e.preventDefault();if(!state.client)return;
+    const email=$('authEmail').value.trim();
+    $('sendMagicLink').disabled=true;
+    try{
+      const {error}=await state.client.auth.signInWithOtp({email,options:{emailRedirectTo:location.href.split('#')[0],shouldCreateUser:true}});
+      if(error)throw error;
+      $('authMessage').textContent='メールを確認してください．';toast('ログインリンクを送信しました');
+    }catch(err){$('authMessage').textContent='送信できませんでした．';console.error(err);}
+    finally{$('sendMagicLink').disabled=false;}
+  }
+  function bind(){
+    $('tabPeople').addEventListener('click',()=>{state.view='people';render();});
+    $('tabPlaces').addEventListener('click',()=>{state.view='places';render();});
+    document.querySelector('.filters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(b){state.filter=b.dataset.filter;render();}});
+    $('endSelect').addEventListener('change',e=>{state.endSlots=Number(e.target.value);renderBoard();});
+    $('undoButton').addEventListener('click',undo);$('redoButton').addEventListener('click',redo);
+    $('newButton').addEventListener('click',makeNew);
+    $('saveButton').addEventListener('click',()=>CLOUD?saveCloud():(persistLocal(),toast('ブラウザに保存しました')));
+    $('shareButton').addEventListener('click',share);
+    $('loginButton').addEventListener('click',onLoginClick);
+    $('exportButton').addEventListener('click',exportJSON);
+    $('importButton').addEventListener('click',()=>{if(state.editor)$('importInput').click();});
+    $('importInput').addEventListener('change',e=>importJSON(e.target.files?.[0]));
+    $('board').addEventListener('click',e=>{const b=e.target.closest('.event');if(b)openEvent(b.dataset.id);});
+    $('board').addEventListener('dragstart',beginDrag);
+    $('board').addEventListener('dragend',()=>{state.drag=null;document.querySelectorAll('.lane-body').forEach(x=>x.classList.remove('drag-over'));});
+    $('board').addEventListener('dragover',e=>{const lane=e.target.closest('.lane-body');if(!state.editor||!lane)return; e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('.lane-body').forEach(x=>x.classList.toggle('drag-over',x===lane));});
+    $('board').addEventListener('drop',dropEvent);
+    $('eventForm').addEventListener('submit',e=>{e.preventDefault();applyForm();});
+    $('deleteEvent').addEventListener('click',deleteSelected);
+    $('closeEvent').addEventListener('click',()=>$('eventDialog').close());
+    $('cancelEvent').addEventListener('click',()=>$('eventDialog').close());
+    $('closeAuth').addEventListener('click',()=>$('authDialog').close());
+    $('authForm').addEventListener('submit',sendMagicLink);
+    document.addEventListener('keydown',e=>{
+      if(!state.editor||e.target.matches('input,textarea,select')||$('eventDialog').open||$('authDialog').open)return;
+      if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo();}
+    });
+  }
+  bind();render();setupCloud();
+})();
+
+</script>
+</body>
+</html>
